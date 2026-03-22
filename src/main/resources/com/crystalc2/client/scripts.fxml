@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<BorderPane xmlns:fx="http://javafx.com/fxml"
+            fx:controller="com.crystalc2.client.ScriptsController"
+            style="-fx-background-color: #1e1e1e;">
+  <top>
+    <HBox styleClass="scripts-toolbar" spacing="8">
+      <Button fx:id="loadButton" text="Load Script" styleClass="scripts-load-btn"
+              onAction="#onLoadScript"/>
+    </HBox>
+  </top>
+  <center>
+    <ScrollPane fitToWidth="true" styleClass="listener-scroll">
+      <FlowPane fx:id="cardPane" hgap="16" vgap="16"
+                styleClass="listener-card-pane"/>
+    </ScrollPane>
+  </center>
+  <bottom>
+    <VBox styleClass="scripts-console-pane" prefHeight="200">
+      <HBox styleClass="scripts-console-toolbar">
+        <Label text="Output" styleClass="scripts-console-label"/>
+        <Region HBox.hgrow="ALWAYS"/>
+        <Button fx:id="clearConsoleButton" text="Clear" styleClass="scripts-console-clear-btn"
+                onAction="#onClearConsole"/>
+      </HBox>
+      <TextArea fx:id="consoleArea" styleClass="scripts-console-area"
+                editable="false" wrapText="true"
+                VBox.vgrow="ALWAYS"/>
+    </VBox>
+  </bottom>
+</BorderPane>

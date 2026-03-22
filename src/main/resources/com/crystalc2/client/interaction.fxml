@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<BorderPane xmlns:fx="http://javafx.com/fxml"
+            fx:controller="com.crystalc2.client.InteractionController"
+            style="-fx-background-color: #1e1e1e;">
+
+  <top>
+    <HBox fx:id="headerBar" styleClass="interaction-header" spacing="24"/>
+  </top>
+
+  <center>
+    <ScrollPane fx:id="scrollPane" fitToWidth="true" styleClass="listener-scroll">
+      <VBox fx:id="outputPane" styleClass="interaction-output"/>
+    </ScrollPane>
+  </center>
+
+  <bottom>
+    <HBox styleClass="interaction-input-bar" spacing="0">
+      <Label text="» " styleClass="interaction-prompt"/>
+      <TextField fx:id="inputField" promptText="Enter command..." styleClass="interaction-input"
+                 HBox.hgrow="ALWAYS"/>
+    </HBox>
+  </bottom>
+
+</BorderPane>

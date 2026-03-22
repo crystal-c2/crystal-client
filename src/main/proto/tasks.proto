@@ -1,0 +1,38 @@
+syntax = "proto3";
+
+option csharp_namespace = "Server.Tasks";
+
+package tasks;
+
+import "google/protobuf/timestamp.proto";
+
+service TaskService {
+  rpc StreamTasks (stream TaskRequest) returns (stream TaskResponse);
+}
+
+message TaskRequest {
+  uint32 beacon_id             = 1;
+  TaskType task_type           = 2;
+  optional bytes task_data     = 3;
+  optional string command_line = 4;
+}
+
+enum TaskType {
+  TASK_TYPE_EXIT  = 0;
+  TASK_TYPE_SLEEP = 1;
+  TASK_TYPE_PICO  = 2;
+}
+
+message TaskResponse {
+  uint32 task_id                      = 1;
+  TaskStatus status                   = 2;
+  optional bytes output               = 3;
+  google.protobuf.Timestamp timestamp = 4;
+}
+
+enum TaskStatus {
+  TASK_STATUS_UNKNOWN  = 0;
+  TASK_STATUS_PENDING  = 1;
+  TASK_STATUS_TASKED   = 2;
+  TASK_STATUS_COMPLETE = 3;
+}

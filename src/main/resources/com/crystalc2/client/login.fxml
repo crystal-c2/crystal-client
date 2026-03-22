@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox xmlns:fx="http://javafx.com/fxml"
+      fx:controller="com.crystalc2.client.LoginController"
+      styleClass="login-root"
+      spacing="0"
+      alignment="CENTER"
+      prefWidth="320">
+
+  <Label text="CrystalC2" styleClass="login-title"/>
+
+  <!-- Recent servers — hidden when empty -->
+  <VBox fx:id="recentPane" styleClass="login-recent-pane" spacing="2" managed="false" visible="false">
+    <Label text="Recent" styleClass="login-section-label"/>
+    <ListView fx:id="recentList" styleClass="login-recent-list" prefHeight="108" maxHeight="108"/>
+  </VBox>
+
+  <VBox styleClass="login-form" spacing="6">
+
+    <Label text="Host" styleClass="login-label"/>
+    <TextField fx:id="hostField" styleClass="login-field"/>
+
+    <Label text="Port" styleClass="login-label"/>
+    <TextField fx:id="portField" styleClass="login-field"/>
+
+    <Label text="Username" styleClass="login-label"/>
+    <TextField fx:id="usernameField" styleClass="login-field"/>
+
+    <Label text="Password" styleClass="login-label"/>
+    <PasswordField fx:id="passwordField" styleClass="login-field"/>
+
+  </VBox>
+
+  <VBox styleClass="login-actions" spacing="8">
+    <Button fx:id="loginButton" text="Login" styleClass="login-btn"
+            onAction="#onLogin" maxWidth="Infinity" defaultButton="true"/>
+    <Label fx:id="errorLabel" styleClass="login-error" wrapText="true"/>
+  </VBox>
+
+</VBox>

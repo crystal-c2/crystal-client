@@ -1,0 +1,52 @@
+syntax = "proto3";
+
+option csharp_namespace = "Server.Listeners";
+
+package listeners;
+
+import "google/protobuf/empty.proto";
+
+service ListenerService {
+  rpc CreateListener (CreateListenerRequest) returns (google.protobuf.Empty);
+  rpc ListenerEvents (google.protobuf.Empty) returns (stream ListenerEvent);
+  rpc DeleteListener (DeleteListenerRequest) returns (google.protobuf.Empty);
+}
+
+enum ListenerEventType {
+  LISTENER_EVENT_UNKNOWN = 0;
+  LISTENER_EVENT_ADDED   = 1;
+  LISTENER_EVENT_DELETED = 2;
+}
+
+message ListenerEvent {
+  ListenerInfo listener  = 1;
+  ListenerEventType type = 2;
+}
+
+message ListenerInfo {
+  uint32 id             = 1;
+  string name           = 2;
+  int32  bind_port      = 3;
+  string coff_name      = 4;
+  bytes coff_bytes      = 5;
+  ListenerStatus status = 6;
+  bytes public_key      = 7;
+}
+
+enum ListenerStatus {
+  LISTENER_STATUS_UNKNOWN = 0;
+  LISTENER_STATUS_STOPPED = 1;
+  LISTENER_STATUS_RUNNING = 2;
+  LISTENER_STATUS_ERROR   = 3;
+}
+
+message CreateListenerRequest {
+  string name       = 1;
+  int32  bind_port  = 2;
+  string coff_name  = 3;
+  bytes  coff_bytes = 4;
+}
+
+message DeleteListenerRequest {
+  uint32 id = 1;
+}

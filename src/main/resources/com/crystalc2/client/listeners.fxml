@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<BorderPane xmlns:fx="http://javafx.com/fxml"
+            fx:controller="com.crystalc2.client.ListenerController"
+            style="-fx-background-color: #1e1e1e;">
+  <top>
+    <HBox styleClass="scripts-toolbar" spacing="8">
+      <Button fx:id="newListenerButton" text="New Listener" styleClass="scripts-load-btn"
+              onAction="#onNewListener"/>
+    </HBox>
+  </top>
+  <center>
+    <ScrollPane fitToWidth="true" styleClass="listener-scroll">
+      <FlowPane fx:id="cardPane" hgap="16" vgap="16"
+                styleClass="listener-card-pane"/>
+    </ScrollPane>
+  </center>
+</BorderPane>

@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<BorderPane xmlns:fx="http://javafx.com/fxml"
+            fx:controller="com.crystalc2.client.PayloadController"
+            style="-fx-background-color: #1e1e1e;">
+  <top>
+    <HBox styleClass="scripts-toolbar" spacing="8">
+      <Button fx:id="buildButton" text="Build Payload" styleClass="scripts-load-btn"
+              onAction="#onBuild" disable="true"/>
+    </HBox>
+  </top>
+  <center>
+    <VBox styleClass="payload-form" spacing="0">
+      <GridPane styleClass="payload-grid">
+        <columnConstraints>
+          <ColumnConstraints minWidth="90"/>
+          <ColumnConstraints hgrow="ALWAYS" minWidth="240"/>
+        </columnConstraints>
+        <rowConstraints>
+          <RowConstraints minHeight="38"/>
+          <RowConstraints minHeight="38"/>
+          <RowConstraints minHeight="38"/>
+          <RowConstraints minHeight="38"/>
+        </rowConstraints>
+
+        <Label text="Listener" styleClass="listener-form-label" GridPane.columnIndex="0" GridPane.rowIndex="0"/>
+        <ComboBox fx:id="listenerCombo" styleClass="payload-combo"
+                  maxWidth="Infinity"
+                  GridPane.columnIndex="1" GridPane.rowIndex="0"/>
+
+        <Label text="Arch" styleClass="listener-form-label" GridPane.columnIndex="0" GridPane.rowIndex="1"/>
+        <CheckBox fx:id="archCheck" text="x64" selected="true"
+                  GridPane.columnIndex="1" GridPane.rowIndex="1"
+                  style="-fx-text-fill: #bbbbbb;"/>
+
+        <Label text="Sleep" styleClass="listener-form-label" GridPane.columnIndex="0" GridPane.rowIndex="2"/>
+        <TextField fx:id="sleepField" styleClass="listener-form-field"
+                   text="05"
+                   maxWidth="Infinity"
+                   GridPane.columnIndex="1" GridPane.rowIndex="2"/>
+
+        <Label text="Jitter" styleClass="listener-form-label" GridPane.columnIndex="0" GridPane.rowIndex="3"/>
+        <TextField fx:id="jitterField" styleClass="listener-form-field"
+                   text="00"
+                   maxWidth="Infinity"
+                   GridPane.columnIndex="1" GridPane.rowIndex="3"/>
+      </GridPane>
+    </VBox>
+  </center>
+</BorderPane>

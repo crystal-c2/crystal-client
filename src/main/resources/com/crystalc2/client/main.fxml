@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.VBox?>
+
+<BorderPane xmlns:fx="http://javafx.com/fxml"
+            fx:controller="com.crystalc2.client.MainController"
+            style="-fx-background-color: #1e1e1e;">
+
+  <top>
+    <VBox styleClass="command-palette">
+      <TextField fx:id="commandInput" promptText="Shortcuts" styleClass="command-palette-input"/>
+      <ListView fx:id="commandList" prefHeight="220.0" styleClass="command-palette-list"/>
+    </VBox>
+  </top>
+
+  <center>
+    <ScrollPane styleClass="listener-scroll" pannable="true">
+      <Pane fx:id="graphPane" style="-fx-background-color: #1e1e1e;"/>
+    </ScrollPane>
+  </center>
+
+</BorderPane>

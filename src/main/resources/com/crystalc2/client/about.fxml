@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox xmlns:fx="http://javafx.com/fxml"
+      fx:controller="com.crystalc2.client.AboutController"
+      styleClass="about-root"
+      spacing="0"
+      prefWidth="480"
+      prefHeight="360">
+
+  <!-- Header -->
+  <VBox styleClass="about-header" spacing="4">
+    <Label text="CrystalC2" styleClass="about-title"/>
+    <Label text="Published under MIT by @_RastaMouse" styleClass="about-subtitle"/>
+  </VBox>
+
+  <!-- Credits -->
+  <ScrollPane fitToWidth="true" styleClass="about-scroll" VBox.vgrow="ALWAYS">
+    <VBox styleClass="about-body" spacing="20">
+
+      <VBox spacing="6">
+        <Label text="With thanks to:" styleClass="about-section-label"/>
+        <VBox styleClass="about-card" spacing="10">
+          <fx:define>
+            <!-- entries added programmatically -->
+          </fx:define>
+          <VBox fx:id="creditsList" spacing="10"/>
+        </VBox>
+      </VBox>
+
+    </VBox>
+  </ScrollPane>
+
+</VBox>
