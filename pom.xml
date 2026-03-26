@@ -6,7 +6,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.crystalc2</groupId>
   <artifactId>client</artifactId>
-  <version>1.0</version>
+  <version>0.1.1</version>
   <name>client</name>
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -168,11 +168,13 @@
               <outputDirectory>${project.build.directory}/resources</outputDirectory>
               <resources>
                 <resource>
-                  <directory>src/main/resources/com/crystalc2/client</directory>
+                  <directory>resources</directory>
                   <includes>
-                    <include>agent.spec</include>
-                    <include>agent.x64.o</include>
                     <include>loader.x64.o</include>
+                    <include>agent.x64.o</include>
+                    <include>agent.spec</include>
+                    <include>socks.x64.o</include>
+                    <include>socks.spec</include>
                     <include>libtcg.x64.zip</include>
                   </includes>
                   <filtering>false</filtering>
