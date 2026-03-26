@@ -1,6 +1,7 @@
 .mvn/*
 out/
 target/
+resources/
 
 .idea/*
 *.iws

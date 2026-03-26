@@ -26,6 +26,7 @@ class PayloadController {
     @FXML private lateinit var archCheck: CheckBox
     @FXML private lateinit var sleepField: TextField
     @FXML private lateinit var jitterField: TextField
+    @FXML private lateinit var socksCheck: CheckBox
 
     @FXML
     fun initialize() {
@@ -98,6 +99,12 @@ class PayloadController {
             params["%SLEEP"] = sleepField.text.trim().ifEmpty { "05" }
             params["%JITTER"] = jitterField.text.trim().ifEmpty { "00" }
             params["\$PUBKEY"] = listener.publicKey.toByteArray()
+
+            val extensions = buildList {
+                if (socksCheck.isSelected) add("socks.spec")
+            }
+
+            params["%EXTENSION"] = extensions.joinToString(",")
 
             val payload = spec.run(cap, params)
 

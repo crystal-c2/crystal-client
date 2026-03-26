@@ -48,6 +48,14 @@
                    maxWidth="Infinity"
                    GridPane.columnIndex="1" GridPane.rowIndex="3"/>
       </GridPane>
+
+      <Separator style="-fx-background-color: #3c3c3c;" />
+
+      <VBox styleClass="payload-section" spacing="0">
+        <Label text="Extensions" styleClass="payload-section-label"/>
+        <CheckBox fx:id="socksCheck" text="Socks"
+                  style="-fx-text-fill: #bbbbbb; -fx-padding: 6 0 0 0;"/>
+      </VBox>
     </VBox>
   </center>
 </BorderPane>

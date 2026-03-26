@@ -225,6 +225,31 @@ object ScriptBridge {
                 null
             }
         )
+        scriptCommands["socks5"] = ScriptCommand(
+            name            = "socks5",
+            description     = "Start or stop a SOCKS5 proxy through the current beacon",
+            longDescription = "socks5 [port] Start SOCKS5 proxy on 127.0.0.1:<port> (default 1080)\n" +
+                              "socks5 stop   Stop the running SOCKS5 proxy",
+            handler = { bid, args ->
+                val token = args.trim().lowercase()
+                when {
+                    token == "stop" -> {
+                        Socks5Proxy.stop()
+                        "SOCKS5 proxy stopped"
+                    }
+                    else -> {
+                        val port = token.toIntOrNull() ?: 1080
+                        try {
+                            Socks5Proxy.start(bid, port)
+                            "SOCKS5 proxy started on 127.0.0.1:$port through beacon ${bid.toUInt()}"
+                        } catch (e: Exception) {
+                            "Failed to start SOCKS5 proxy: ${e.message}"
+                        }
+                    }
+                }
+            }
+        )
+
         register("register_command") { args ->
             val name     = args.getOrNull(0) as? String ?: return@register null
             val desc     = args.getOrNull(1) as? String ?: ""

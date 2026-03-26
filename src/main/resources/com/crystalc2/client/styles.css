@@ -436,6 +436,17 @@
     -fx-background-color: #a0a0a0;
 }
 
+.payload-section {
+    -fx-padding: 12 20;
+}
+
+.payload-section-label {
+    -fx-text-fill: #888888;
+    -fx-font-size: 11px;
+    -fx-font-weight: bold;
+    -fx-padding: 0 0 4 0;
+}
+
 /* ── About window ─────────────────────────────────────────── */
 
 .about-root {

@@ -1,0 +1,22 @@
+syntax = "proto3";
+
+package proxy;
+
+service ProxyService {
+  rpc ProxyStream (stream ProxyFrame) returns (stream ProxyFrame);
+}
+
+message ProxyFrame {
+  uint32 beacon_id     = 1;
+  uint32 connection_id = 2;
+  ProxyFrameType type  = 3;
+  bytes data           = 4;
+  string target_host   = 5;
+  uint32 target_port   = 6;
+}
+
+enum ProxyFrameType {
+  PROXY_FRAME_TYPE_DATA    = 0;
+  PROXY_FRAME_TYPE_CLOSE   = 1;
+  PROXY_FRAME_TYPE_CONNECT = 2;
+}
