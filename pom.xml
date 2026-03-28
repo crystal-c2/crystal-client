@@ -6,7 +6,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.crystalc2</groupId>
   <artifactId>client</artifactId>
-  <version>0.2.0</version>
+  <version>0.3.0</version>
   <name>client</name>
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -176,6 +176,24 @@
                     <include>socks.x64.o</include>
                     <include>socks.spec</include>
                     <include>libtcg.x64.zip</include>
+                  </includes>
+                  <filtering>false</filtering>
+                </resource>
+              </resources>
+            </configuration>
+          </execution>
+          <execution>
+            <id>copy-launch-assets</id>
+            <phase>package</phase>
+            <goals><goal>copy-resources</goal></goals>
+            <configuration>
+              <outputDirectory>${project.build.directory}</outputDirectory>
+              <resources>
+                <resource>
+                  <directory>resources</directory>
+                  <includes>
+                    <include>crystal-client</include>
+                    <include>source-common.sh</include>
                   </includes>
                   <filtering>false</filtering>
                 </resource>

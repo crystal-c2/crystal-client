@@ -67,6 +67,7 @@ object ClientState {
             }
         } finally {
             restoring = false
+            savedScriptPaths.clear()
         }
     }
 

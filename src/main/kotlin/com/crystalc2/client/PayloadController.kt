@@ -9,8 +9,10 @@ import javafx.fxml.FXML
 import javafx.scene.control.Button
 import javafx.scene.control.CheckBox
 import javafx.scene.control.ComboBox
+import javafx.scene.control.Label
 import javafx.scene.control.ListCell
 import javafx.scene.control.TextField
+import javafx.scene.layout.VBox
 import javafx.stage.FileChooser
 import java.io.File
 import javafx.util.StringConverter
@@ -26,7 +28,7 @@ class PayloadController {
     @FXML private lateinit var archCheck: CheckBox
     @FXML private lateinit var sleepField: TextField
     @FXML private lateinit var jitterField: TextField
-    @FXML private lateinit var socksCheck: CheckBox
+    @FXML private lateinit var extensionsBox: VBox
 
     @FXML
     fun initialize() {
@@ -59,6 +61,9 @@ class PayloadController {
             }
         }
 
+        rebuildExtensions()
+        ScriptBridge.onPayloadExtensionsChanged = ::rebuildExtensions
+
         ListenerServiceGrpc.newStub(GrpcClient.channel)
             .listenerEvents(Empty.getDefaultInstance(), object : StreamObserver<ListenerEvent> {
                 override fun onNext(ev: ListenerEvent) {
@@ -82,6 +87,29 @@ class PayloadController {
             })
     }
 
+    private fun rebuildExtensions() {
+        // Keep the header label (index 0), replace everything after it
+        val label = extensionsBox.children.firstOrNull()
+        extensionsBox.children.clear()
+        if (label != null) extensionsBox.children.add(label)
+        if (ScriptBridge.payloadExtensions.isEmpty()) {
+            extensionsBox.children.add(
+                Label("no extensions loaded").apply {
+                    style = "-fx-text-fill: #666666; -fx-padding: 6 0 0 0; -fx-font-style: italic;"
+                }
+            )
+        } else {
+            ScriptBridge.payloadExtensions.forEach { ext ->
+                extensionsBox.children.add(
+                    CheckBox(ext.label).apply {
+                        userData = ext.specPath
+                        style = "-fx-text-fill: #bbbbbb; -fx-padding: 6 0 0 0;"
+                    }
+                )
+            }
+        }
+    }
+
     @FXML
     fun onBuild() {
         try {
@@ -100,9 +128,10 @@ class PayloadController {
             params["%JITTER"] = jitterField.text.trim().ifEmpty { "00" }
             params["\$PUBKEY"] = listener.publicKey.toByteArray()
 
-            val extensions = buildList {
-                if (socksCheck.isSelected) add("socks.spec")
-            }
+            val extensions = extensionsBox.children
+                .filterIsInstance<CheckBox>()
+                .filter { it.isSelected }
+                .map { it.userData as String }
 
             params["%EXTENSION"] = extensions.joinToString(",")
 

@@ -29,6 +29,8 @@ data class ScriptCommand(
     val handler: ((beaconId: Int, args: String) -> String?)? = null,
 )
 
+data class PayloadExtension(val label: String, val specPath: String)
+
 object ScriptBridge {
     private val loader = ScriptLoader()
 
@@ -75,8 +77,12 @@ object ScriptBridge {
     }
 
     private val registeredFunctions = mutableMapOf<String, (List<Any?>) -> Any?>()
+    private val registeredContextualFunctions = mutableMapOf<String, (ScriptInstance, List<Any?>) -> Any?>()
     private val fileInstances = mutableMapOf<String, ScriptInstance>()
     private val scriptCommands = mutableMapOf<String, ScriptCommand>()
+
+    val payloadExtensions = mutableListOf<PayloadExtension>()
+    var onPayloadExtensionsChanged: (() -> Unit)? = null
 
     // Task stream shared across all script-initiated beacon tasks
     private val scriptTaskQueue = ArrayDeque<Pair<Int, SleepClosure?>>()
@@ -225,31 +231,27 @@ object ScriptBridge {
                 null
             }
         )
-        scriptCommands["socks5"] = ScriptCommand(
-            name            = "socks5",
-            description     = "Start or stop a SOCKS5 proxy through the current beacon",
-            longDescription = "socks5 [port] Start SOCKS5 proxy on 127.0.0.1:<port> (default 1080)\n" +
-                              "socks5 stop   Stop the running SOCKS5 proxy",
-            handler = { bid, args ->
-                val token = args.trim().lowercase()
-                when {
-                    token == "stop" -> {
-                        Socks5Proxy.stop()
-                        "SOCKS5 proxy stopped"
-                    }
-                    else -> {
-                        val port = token.toIntOrNull() ?: 1080
-                        try {
-                            Socks5Proxy.start(bid, port)
-                            "SOCKS5 proxy started on 127.0.0.1:$port through beacon ${bid.toUInt()}"
-                        } catch (e: Exception) {
-                            "Failed to start SOCKS5 proxy: ${e.message}"
-                        }
-                    }
-                }
-            }
-        )
 
+        registerWithScript("script_resource") { script, _ ->
+            File(script.getName()).parentFile?.absolutePath
+        }
+        register("socks5_start") { args ->
+            val bid  = args.getOrNull(0)?.toString()?.toIntOrNull() ?: return@register null
+            val port = args.getOrNull(1)?.toString()?.toIntOrNull() ?: 1080
+            Socks5Proxy.start(bid, port)
+            null
+        }
+        register("socks5_stop") { _ ->
+            Socks5Proxy.stop()
+            null
+        }
+        register("register_payload_extension") { args ->
+            val label    = args.getOrNull(0) as? String ?: return@register null
+            val specPath = args.getOrNull(1) as? String ?: return@register null
+            payloadExtensions.add(PayloadExtension(label, specPath))
+            Platform.runLater { onPayloadExtensionsChanged?.invoke() }
+            null
+        }
         register("register_command") { args ->
             val name     = args.getOrNull(0) as? String ?: return@register null
             val desc     = args.getOrNull(1) as? String ?: ""
@@ -360,6 +362,12 @@ object ScriptBridge {
         val bare = name.removePrefix("&")
         registeredFunctions["&$bare"] = handler
         registeredFunctions[bare] = handler
+    }
+
+    private fun registerWithScript(name: String, handler: (ScriptInstance, List<Any?>) -> Any?) {
+        val bare = name.removePrefix("&")
+        registeredContextualFunctions["&$bare"] = handler
+        registeredContextualFunctions[bare] = handler
     }
 
     fun getScriptCommand(name: String): ScriptCommand? = scriptCommands[name]
@@ -491,7 +499,10 @@ object ScriptBridge {
             }
             val env = script.scriptEnvironment.getEnvironment()
             registeredFunctions.forEach { (key, handler) ->
-                env[key] = SleepFunction(key, handler)
+                env[key] = SleepFunction(handler)
+            }
+            registeredContextualFunctions.forEach { (key, handler) ->
+                env[key] = SleepFunctionWithScript(handler)
             }
         }
 
@@ -500,7 +511,28 @@ object ScriptBridge {
         }
     }
 
-    private class SleepFunction(private val name: String, private val handler: (List<Any?>) -> Any?, ) : Function {
+    private class SleepFunctionWithScript(
+        private val handler: (ScriptInstance, List<Any?>) -> Any?
+    ) : Function {
+        override fun evaluate(funcName: String, script: ScriptInstance, args: Stack<*>): Scalar {
+            val converted = args.reversed().map { fromScalar(it as Scalar) }
+            return try {
+                toScalar(handler(script, converted))
+            } catch (e: Exception) {
+                script.scriptEnvironment.flagError(e)
+                SleepUtils.getEmptyScalar()
+            }
+        }
+        private fun fromScalar(s: Scalar): Any? {
+            if (SleepUtils.isEmptyScalar(s)) return null
+            val obj = s.objectValue()
+            if (obj != null && obj !is String) return obj
+            return s.stringValue()
+        }
+        private fun toScalar(value: Any?): Scalar = ScriptBridge.toScalar(value)
+    }
+
+    private class SleepFunction(private val handler: (List<Any?>) -> Any?) : Function {
 
         override fun evaluate(funcName: String, script: ScriptInstance, args: Stack<*>, ): Scalar {
             val converted = args.reversed().map { fromScalar(it as Scalar) }
